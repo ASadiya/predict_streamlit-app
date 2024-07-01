@@ -1,6 +1,8 @@
 import streamlit as st 
 import joblib 
 
+from pipeline import recode_region 
+
 model = joblib.load("model_pipeline.joblib")
 
 st.title("Modèle de prédiction des primes d'assurances")
