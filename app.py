@@ -1,6 +1,7 @@
 import streamlit as st 
 import joblib 
 
+import pipeline 
 from pipeline import recode_region 
 
 model = joblib.load("model_pipeline.joblib")
