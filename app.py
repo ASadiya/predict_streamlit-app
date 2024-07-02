@@ -1,8 +1,6 @@
 import streamlit as st 
 import pickle
 
-model = joblib.load("model.pkl")
-
 # Charger le modèle depuis le fichier
 with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
