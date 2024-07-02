@@ -7,5 +7,6 @@ joblib
 xgboost
 openpyxl
 pipeline
+pickle
 
 
