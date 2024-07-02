@@ -1,10 +1,37 @@
 import streamlit as st 
 import joblib 
 
-import pipeline 
-from pipeline import recode_region 
+model = joblib.load("model.pkl")
 
-model = joblib.load("model_pipeline.joblib")
+
+def preprocessing(new_data):
+    data = new_data.copy()
+
+    categorical_var = ['sex', 'smoker', 'region']
+    numeric_var = ['age', 'bmi', 'children']
+    columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region']
+
+    if not isinstance(data, pd.core.frame.DataFrame):
+        data = [{i:j for i,j in zip(columns, data)}]
+        data = pd.DataFrame(data)
+
+
+    encoder = OneHotEncoder()
+
+    for i in range(len(categorical_var)):
+        data[categorical_var[i]] = encoder.fit_transform(data[categorical_var[i]].values.reshape(-1,1)).toarray()
+
+
+    scaler = StandardScaler()
+
+    new_numeric_var = numeric_var + categorical_var
+    new_numeric_var
+
+    data[new_numeric_var] = scaler.fit_transform(data[new_numeric_var])
+    
+    return data
+
+
 
 st.title("Modèle de prédiction des primes d'assurances")
 
@@ -39,6 +66,7 @@ with st.form(key='prediction.form'):
     st.form_submit_button(label="Obtenir votre prédiction")
 
 
+
 if submit_button:
     try:
 
@@ -53,10 +81,15 @@ if submit_button:
             sex = sex_map[sex_display]
             smoker = smoker_map[smoker_display]
             region = region_map[region_display]
+            if region in ['northwest', 'southwest']:
+                region = 'West'
+            else:
+                region = 'East'
 
             input_data = [[age, sex, bmi, children, smoker, region]]
+            input_data_preprocessed = preprocessing(input_data)
 
-            prediction = model.predict(input_data)
+            prediction = model.predict(input_data_preprocessed)
             st.success(f" Prédiction\nPrime d'assurance maladie: {prediction[0]}")
 
     except Exception as e:
