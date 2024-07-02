@@ -6,5 +6,6 @@ streamlit
 joblib
 xgboost
 openpyxl
+pipeline
 
 
